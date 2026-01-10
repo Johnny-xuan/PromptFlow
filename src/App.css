@@ -1,0 +1,432 @@
+@import "tailwindcss";
+
+:root {
+  font-family: "SF Pro Display", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  background-color: transparent; 
+  color: #e2e8f0;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Default font size - can be overridden by JS */
+  --app-font-size: 14px;
+
+  /* Dark theme (default) */
+  --window-bg: rgba(15, 15, 20, 0.82);
+  --window-border: rgba(255, 255, 255, 0.10);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-border: rgba(255, 255, 255, 0.06);
+  --output-bg: rgba(0, 0, 0, 0.25);
+  --divider: rgba(255, 255, 255, 0.06);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.15);
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+ 
+  /* Panel surfaces */
+  --panel-bg: rgba(255, 255, 255, 0.012);
+  --panel-bg-focus: rgba(255, 255, 255, 0.028);
+
+  color-scheme: dark;
+  background-color: transparent; 
+  color: var(--text-primary);
+}
+
+/* Light theme - main window keeps glassmorphism */
+[data-theme="light"] {
+  --window-bg: rgba(255, 255, 255, 0.75);
+  --window-border: rgba(0, 0, 0, 0.08);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --input-bg: rgba(255, 255, 255, 0.6);
+  --input-border: rgba(0, 0, 0, 0.10);
+  --output-bg: rgba(0, 0, 0, 0.03);
+  --divider: rgba(0, 0, 0, 0.08);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
+  --accent: #4f46e5;
+  --accent-hover: #6366f1;
+ 
+  /* Panel surfaces */
+  --panel-bg: rgba(0, 0, 0, 0.02);
+  --panel-bg-focus: rgba(0, 0, 0, 0.04);
+
+  color-scheme: light;
+  color: var(--text-primary);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent;
+  font-size: var(--app-font-size);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Floating window effect - Raycast/Arc style */
+.floating-window {
+  background: var(--window-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-radius: 16px;
+  border: 1px solid var(--window-border);
+  overflow: hidden;
+}
+
+/* Panel surface (input/output areas): subtle focus difference */
+.panel-surface {
+  background: var(--panel-bg);
+  transition: background-color 160ms ease;
+}
+
+.panel-surface:focus-within {
+  background: var(--panel-bg-focus);
+}
+
+/* Editor typography uses configurable font size */
+.app-editor {
+  font-size: var(--app-font-size);
+  line-height: 1.7;
+}
+
+/* Subtle glow effect */
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(99, 102, 241, 0.5), 
+    rgba(139, 92, 246, 0.5), 
+    transparent);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* Custom scrollbar - unified style for all scrollable areas */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* Modal styles with theme support */
+.modal-content {
+  background: var(--window-bg);
+  border: 1px solid var(--window-border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--divider);
+}
+
+.modal-title {
+  color: var(--text-primary);
+}
+
+.modal-close-btn {
+  color: var(--text-muted);
+}
+
+.modal-close-btn:hover {
+  color: var(--text-secondary);
+  background: var(--input-bg);
+}
+
+/* Light theme modal - solid opaque background for readability */
+[data-theme="light"] .modal-content {
+  background: #f1f5f9;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Dark theme modal - also solid for consistency */
+[data-theme="dark"] .modal-content,
+:root:not([data-theme]) .modal-content {
+  background: rgba(24, 24, 28, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Form elements with theme support */
+.form-label {
+  color: var(--text-secondary);
+}
+
+.form-input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.form-text {
+  color: var(--text-secondary);
+}
+
+.form-text-muted {
+  color: var(--text-muted);
+}
+
+/* Light theme - override Tailwind utility colors (no CSS nesting) */
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .text-slate-500,
+[data-theme="light"] .text-slate-600 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .text-slate-700 {
+  color: #334155 !important;
+}
+
+/* Placeholder overrides */
+[data-theme="light"] .placeholder\:text-slate-600::placeholder {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .placeholder\:text-slate-500::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Background overrides */
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/\[0\.02\],
+[data-theme="light"] .bg-white\/5 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .bg-white\/\[0\.08\] {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Border overrides */
+[data-theme="light"] .border-white\/\[0\.06\],
+[data-theme="light"] .border-white\/\[0\.04\],
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Hover state overrides */
+[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover,
+[data-theme="light"] .hover\:bg-white\/5:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .hover\:text-slate-200:hover,
+[data-theme="light"] .hover\:text-slate-300:hover {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .hover\:text-slate-400:hover {
+  color: #475569 !important;
+}
+
+/* Clarification panel */
+.clarification-panel {
+  padding: 12px;
+  background: rgba(15, 15, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+[data-theme="light"] .clarification-panel {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Dropdown menu - theme aware */
+.dropdown-menu {
+  background: rgba(15, 15, 20, 0.95);
+}
+
+.dropdown-item {
+  color: #94a3b8;
+}
+
+.dropdown-item:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dropdown-item-active {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] .dropdown-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .dropdown-item {
+  color: #64748b;
+}
+
+[data-theme="light"] .dropdown-item:hover {
+  color: #1e293b;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .dropdown-item-active {
+  color: #1e293b;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Polish button glow border animation */
+.polish-glow {
+  position: relative;
+}
+
+.polish-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 9px;
+  padding: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.6) 25%,
+    rgba(168, 85, 247, 0.6) 50%,
+    rgba(251, 191, 36, 0.6) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: borderGlow 2.5s linear infinite;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderGlow {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Animations for Onboarding */
+@keyframes enter-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes enter-slide-bottom {
+  from { transform: translateY(1rem); }
+  to { transform: translateY(0); }
+}
+
+@keyframes enter-slide-right {
+  from { transform: translateX(1rem); }
+  to { transform: translateX(0); }
+}
+
+.animate-in {
+  animation-duration: 150ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: enter-fade;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: enter-slide-bottom;
+}
+
+.slide-in-from-right-4 {
+  animation-name: enter-slide-right;
+}
+
+/* Composition */
+.animate-in.fade-in.slide-in-from-bottom-4 {
+  animation-name: enter-fade, enter-slide-bottom;
+}
+
+.animate-in.fade-in.slide-in-from-right-4 {
+  animation-name: enter-fade, enter-slide-right;
+}
+
+/* Animation Utilities */
+.animate-in.duration-300 {
+  animation-duration: 300ms;
+}
+
+.animate-in.duration-500 {
+  animation-duration: 500ms;
+}
+
+/* Background Patterns */
+.bg-grid-pattern {
+  background-size: 20px 20px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}

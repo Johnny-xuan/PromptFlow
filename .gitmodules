@@ -1,0 +1,3 @@
+[submodule "tauri-nspanel"]
+	path = tauri-nspanel
+	url = git@github.com:ahkohd/tauri-nspanel.git
