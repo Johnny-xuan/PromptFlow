@@ -4,6 +4,7 @@ import { Modal } from "../ui";
 import { cn } from "../../lib/utils";
 import type { PromptItem } from "../../types";
 import { promptService } from "../../lib/services";
+import { useI18n } from "../../lib/i18n/context";
 
 interface TemplateDialogProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export function TemplateDialog({
   onAdd,
   onTemplatesRefresh,
 }: TemplateDialogProps) {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<PromptItem | null>(null);
   const [view, setView] = useState<"list" | "preview" | "edit">("list");
@@ -177,13 +179,13 @@ export function TemplateDialog({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="选择模板" size="md">
+    <Modal isOpen={isOpen} onClose={handleClose} title={t.messages.selectTemplate} size="md">
       {deleteConfirmOpen && selectedTemplate && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60">
           <div className="w-[360px] max-w-[90vw] rounded-xl border border-white/10 bg-[#1A1A24] p-4 shadow-2xl">
-            <div className="text-[13px] font-medium text-slate-200">删除模板</div>
+            <div className="text-[13px] font-medium text-slate-200">{t.messages.deleteTemplate}</div>
             <div className="mt-1 text-[11px] text-slate-400">
-              确定删除模板「{selectedTemplate.title}」吗？此操作不可撤销。
+              {t.messages.deleteConfirm} "{selectedTemplate.title}"? {t.messages.cannotUndo}
             </div>
 
             <div className="mt-4 flex items-center justify-end gap-2">
@@ -193,7 +195,7 @@ export function TemplateDialog({
                 className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors disabled:opacity-50"
                 type="button"
               >
-                取消
+                {t.common.cancel}
               </button>
               <button
                 onClick={confirmDeleteTemplate}
@@ -201,7 +203,7 @@ export function TemplateDialog({
                 className="px-3 py-1.5 text-xs font-medium bg-red-500/80 text-white rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50"
                 type="button"
               >
-                删除
+                {t.common.delete}
               </button>
             </div>
           </div>
@@ -241,10 +243,10 @@ export function TemplateDialog({
                 {templates.length === 0 ? (
                   <div className="space-y-1">
                     <LayoutTemplate className="w-6 h-6 mx-auto opacity-40" />
-                    <p className="text-xs">还没有模板</p>
+                    <p className="text-xs">{t.dialogs.noTemplates}</p>
                   </div>
                 ) : (
-                  <p className="text-xs">没有找到匹配的模板</p>
+                  <p className="text-xs">{t.dialogs.noMatch}</p>
                 )}
               </div>
             ) : (
@@ -299,7 +301,7 @@ export function TemplateDialog({
                 onClick={requestDeleteTemplate}
                 disabled={isSaving}
                 className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 hover:bg-white/5 transition-colors disabled:opacity-50"
-                title="删除模板"
+                title={t.messages.deleteTemplate}
                 type="button"
               >
                 <Trash2 className="w-4 h-4" />
@@ -312,7 +314,7 @@ export function TemplateDialog({
                   type="button"
                 >
                   <Eye className="w-3.5 h-3.5" />
-                  预览
+                  {t.common.preview}
                 </button>
                 <button
                   onClick={startEdit}
@@ -320,14 +322,14 @@ export function TemplateDialog({
                   type="button"
                 >
                   <Pencil className="w-3.5 h-3.5" />
-                  编辑
+                  {t.common.edit}
                 </button>
                 <button 
                   onClick={handleApply}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-indigo-500/80 text-white rounded-lg hover:bg-indigo-500 transition-colors"
                   type="button"
                 >
-                  应用
+                  {t.common.apply}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -344,7 +346,7 @@ export function TemplateDialog({
                 onClick={() => setView("list")}
                 className="text-[11px] text-slate-500 hover:text-slate-300"
               >
-                返回
+                {t.common.close}
               </button>
             </div>
             
@@ -366,7 +368,7 @@ export function TemplateDialog({
               onClick={requestDeleteTemplate}
               disabled={isSaving}
               className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 hover:bg-white/5 transition-colors disabled:opacity-50"
-              title="删除模板"
+              title={t.messages.deleteTemplate}
               type="button"
             >
               <Trash2 className="w-4 h-4" />
@@ -378,21 +380,21 @@ export function TemplateDialog({
                 className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
                 type="button"
               >
-                返回
+                {t.common.close}
               </button>
               <button 
                 onClick={startEdit}
                 className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
                 type="button"
               >
-                编辑
+                {t.common.edit}
               </button>
               <button 
                 onClick={handleApply}
                 className="px-3 py-1.5 text-xs font-medium bg-indigo-500/80 text-white rounded-lg hover:bg-indigo-500 transition-colors"
                 type="button"
               >
-                应用模板
+                {t.messages.applyTemplate}
               </button>
             </div>
           </div>
@@ -402,18 +404,18 @@ export function TemplateDialog({
           {/* Edit Mode */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-[13px] font-medium text-slate-300">编辑模板</h3>
+              <h3 className="text-[13px] font-medium text-slate-300">{t.messages.editTemplate}</h3>
               <button
                 onClick={() => setView("preview")}
                 disabled={isSaving}
                 className="text-[11px] text-slate-500 hover:text-slate-300 disabled:opacity-50"
               >
-                返回
+                {t.common.close}
               </button>
             </div>
 
             <div className="space-y-1">
-              <label className="block text-[11px] font-medium text-slate-400">标题</label>
+              <label className="block text-[11px] font-medium text-slate-400">{t.dialogs.title}</label>
               <input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
@@ -422,7 +424,7 @@ export function TemplateDialog({
             </div>
 
             <div className="space-y-1">
-              <label className="block text-[11px] font-medium text-slate-400">描述</label>
+              <label className="block text-[11px] font-medium text-slate-400">{t.dialogs.description}</label>
               <input
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
@@ -433,7 +435,7 @@ export function TemplateDialog({
 
             <div className="flex gap-2">
               <div className="flex-1 space-y-1">
-                <label className="block text-[11px] font-medium text-slate-400">标签</label>
+                <label className="block text-[11px] font-medium text-slate-400">{t.dialogs.tags}</label>
                 <input
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}

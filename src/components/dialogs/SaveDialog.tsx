@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Save, Star, LayoutTemplate, X, Plus } from "lucide-react";
 import { Modal, Button } from "../ui";
 import { cn } from "../../lib/utils";
+import { useI18n } from "../../lib/i18n/context";
 
 interface SaveDialogProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export interface SavePromptData {
 }
 
 export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps) {
+  const { t } = useI18n();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -49,7 +51,7 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
     const newErrors: { title?: string } = {};
     
     if (!title.trim()) {
-      newErrors.title = "请输入标题";
+      newErrors.title = t.messages.enterTitle;
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -79,11 +81,11 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="保存 Prompt" size="md">
+    <Modal isOpen={isOpen} onClose={handleClose} title={t.dialogs.savePrompt} size="md">
       <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
         {/* Folder Selection */}
         <div className="space-y-2">
-          <label className="form-label block text-sm font-medium">保存到</label>
+          <label className="form-label block text-sm font-medium">{t.messages.saveTo}</label>
           <div className="flex gap-2">
             <button
               onClick={() => setFolder('favorites')}
@@ -95,7 +97,7 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
               )}
             >
               <Star className="w-4 h-4" />
-              <span className="text-sm font-medium">常用</span>
+              <span className="text-sm font-medium">{t.app.favorites}</span>
             </button>
             <button
               onClick={() => setFolder('templates')}
@@ -107,14 +109,14 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
               )}
             >
               <LayoutTemplate className="w-4 h-4" />
-              <span className="text-sm font-medium">模板</span>
+              <span className="text-sm font-medium">{t.app.templates}</span>
             </button>
           </div>
         </div>
 
         {/* Title */}
         <div className="space-y-1.5">
-          <label className="form-label block text-sm font-medium">标题</label>
+          <label className="form-label block text-sm font-medium">{t.dialogs.title}</label>
           <input
             value={title}
             onChange={(e) => {
@@ -134,7 +136,7 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
 
         {/* Description */}
         <div className="space-y-1.5">
-          <label className="form-label block text-sm font-medium">描述 (可选)</label>
+          <label className="form-label block text-sm font-medium">{t.dialogs.description}</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -146,7 +148,7 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
 
         {/* Tags */}
         <div className="space-y-1.5">
-          <label className="form-label block text-sm font-medium">标签</label>
+          <label className="form-label block text-sm font-medium">{t.dialogs.tags}</label>
           <div className="flex gap-2">
             <input
               value={tagInput}
@@ -182,7 +184,7 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
 
         {/* Content Preview */}
         <div className="space-y-1.5">
-          <label className="form-label block text-sm font-medium">内容预览</label>
+          <label className="form-label block text-sm font-medium">{t.common.preview}</label>
           <div className="p-3 rounded-lg border border-[var(--input-border)] bg-[var(--output-bg)] max-h-[100px] overflow-y-auto">
             <p className="form-text-muted text-sm whitespace-pre-wrap line-clamp-4">
               {content || "无内容"}
@@ -194,11 +196,11 @@ export function SaveDialog({ isOpen, onClose, content, onSave }: SaveDialogProps
       {/* Actions */}
       <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-[var(--divider)]">
         <Button variant="ghost" onClick={handleClose}>
-          取消
+          {t.common.cancel}
         </Button>
         <Button onClick={handleSave}>
           <Save className="w-4 h-4" />
-          保存
+          {t.common.save}
         </Button>
       </div>
     </Modal>
