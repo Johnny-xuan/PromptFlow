@@ -143,6 +143,25 @@ export interface Translations {
     accessibilityNote: string;
     openSettings: string;
     later: string;
+    apiKeyRequired: string;
+    connectionSuccess: string;
+    repoInitSuccess: string;
+    saveTo: string;
+    deleteConfirm: string;
+    cannotUndo: string;
+    noMatch: string;
+    selectTemplate: string;
+    selectTemplateDesc: string;
+    createFromScratch: string;
+    saving: string;
+    applyTemplate: string;
+    editTemplate: string;
+    deleteTemplate: string;
+    enterTitle: string;
+    customizePolishStyle: string;
+    polishPresets: string;
+    baseUrlOptional: string;
+    enterOrSelectModel: string;
   };
 }
 
@@ -277,6 +296,25 @@ const zhCN: Translations = {
     accessibilityNote: '授权后可能需要重启应用才能生效。',
     openSettings: '打开系统设置',
     later: '稍后',
+    apiKeyRequired: '请先在设置中配置 API Key',
+    connectionSuccess: '连接成功',
+    repoInitSuccess: '仓库初始化成功',
+    saveTo: '保存到',
+    deleteConfirm: '确定删除',
+    cannotUndo: '此操作不可撤销',
+    noMatch: '没有找到匹配项',
+    selectTemplate: '选择模板',
+    selectTemplateDesc: '选择一个模板快速开始，或从空白创建',
+    createFromScratch: '从空白创建',
+    saving: '保存中...',
+    applyTemplate: '应用模板',
+    editTemplate: '编辑模板',
+    deleteTemplate: '删除模板',
+    enterTitle: '请输入标题',
+    customizePolishStyle: '自定义你的润色风格',
+    polishPresets: '润色预设',
+    baseUrlOptional: '可选，留空使用默认',
+    enterOrSelectModel: '请输入或选择模型',
   },
 };
 
@@ -411,6 +449,25 @@ const en: Translations = {
     accessibilityNote: 'You may need to restart the app after granting permission.',
     openSettings: 'Open Settings',
     later: 'Later',
+    apiKeyRequired: 'Please configure API Key in settings first',
+    connectionSuccess: 'Connection successful',
+    repoInitSuccess: 'Repository initialized successfully',
+    saveTo: 'Save to',
+    deleteConfirm: 'Confirm delete',
+    cannotUndo: 'This action cannot be undone',
+    noMatch: 'No matches found',
+    selectTemplate: 'Select Template',
+    selectTemplateDesc: 'Choose a template to get started, or create from scratch',
+    createFromScratch: 'Create from scratch',
+    saving: 'Saving...',
+    applyTemplate: 'Apply Template',
+    editTemplate: 'Edit Template',
+    deleteTemplate: 'Delete Template',
+    enterTitle: 'Please enter a title',
+    customizePolishStyle: 'Customize your polish style',
+    polishPresets: 'Polish Presets',
+    baseUrlOptional: 'Optional, leave empty for default',
+    enterOrSelectModel: 'Enter or select a model',
   },
 };
 

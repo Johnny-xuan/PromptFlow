@@ -8,6 +8,7 @@ import { openPath, revealItemInDir } from "@tauri-apps/plugin-opener";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { promptService } from "../../lib/services";
 import { AIPresetCreatorDialog } from "./AIPresetCreatorDialog";
+import { useI18n } from "../../lib/i18n/context";
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -19,15 +20,23 @@ interface SettingsDialogProps {
 
 type TabId = 'ui' | 'api' | 'polish' | 'storage';
 
-const tabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
-  { id: 'ui', label: '界面', icon: <Palette className="w-4 h-4" /> },
-  { id: 'api', label: 'API', icon: <Key className="w-4 h-4" /> },
-  { id: 'polish', label: '润色', icon: <Sparkles className="w-4 h-4" /> },
-  { id: 'storage', label: '存储', icon: <FolderOpen className="w-4 h-4" /> },
-];
+const tabIcons: Record<TabId, React.ReactNode> = {
+  ui: <Palette className="w-4 h-4" />,
+  api: <Key className="w-4 h-4" />,
+  polish: <Sparkles className="w-4 h-4" />,
+  storage: <FolderOpen className="w-4 h-4" />,
+};
 
 export function SettingsDialog({ isOpen, onClose, config, onSave }: SettingsDialogProps) {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<TabId>('ui');
+  
+  const tabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
+    { id: 'ui', label: t.settings.ui, icon: tabIcons.ui },
+    { id: 'api', label: 'API', icon: tabIcons.api },
+    { id: 'polish', label: t.settings.polish, icon: tabIcons.polish },
+    { id: 'storage', label: t.settings.storage, icon: tabIcons.storage },
+  ];
   const [localConfig, setLocalConfig] = useState<AppConfig>(config);
   const [showAIPresetCreator, setShowAIPresetCreator] = useState(false);
 
@@ -64,7 +73,7 @@ export function SettingsDialog({ isOpen, onClose, config, onSave }: SettingsDial
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="设置" size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={t.settings.title} size="lg">
       <div className="flex gap-3 h-[360px]">
         {/* Sidebar - 更简洁 */}
         <div className="w-24 shrink-0 space-y-0.5">
@@ -113,20 +122,20 @@ export function SettingsDialog({ isOpen, onClose, config, onSave }: SettingsDial
           className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] text-slate-500 hover:text-slate-300 rounded-lg hover:bg-white/5 transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
-          重置
+          {t.common.reset}
         </button>
         <div className="flex gap-2">
           <button 
             onClick={onClose}
             className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300 rounded-lg hover:bg-white/5 transition-colors"
           >
-            取消
+            {t.common.cancel}
           </button>
           <button 
             onClick={handleSave}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-indigo-500/80 text-white rounded-lg hover:bg-indigo-500 transition-colors"
           >
-            保存
+            {t.common.save}
           </button>
         </div>
       </div>
@@ -156,22 +165,23 @@ function UISettings({
   config: AppConfig['ui']; 
   onChange: (updates: Partial<AppConfig['ui']>) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="space-y-4">
       {/* Hotkey - 暂时锁定，不可修改 */}
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-medium text-slate-400">全局快捷键</label>
+        <label className="block text-[11px] font-medium text-slate-400">{t.settings.hotkey}</label>
         <input
           value={config.hotkey}
           readOnly
           className="w-full px-2.5 py-2 text-xs bg-white/[0.02] border border-white/[0.04] rounded-lg text-slate-400 cursor-default"
         />
-        <p className="text-[10px] text-slate-600">暂不支持自定义</p>
+        <p className="text-[10px] text-slate-600">{t.settings.hotkeyNotCustomizable}</p>
       </div>
 
       {/* Theme */}
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-medium text-slate-400">主题</label>
+        <label className="block text-[11px] font-medium text-slate-400">{t.settings.theme}</label>
         <div className="flex gap-1.5">
           {(['light', 'dark', 'system'] as const).map((theme) => (
             <button
@@ -184,7 +194,7 @@ function UISettings({
                   : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]"
               )}
             >
-              {theme === 'light' ? '浅色' : theme === 'dark' ? '深色' : '系统'}
+              {theme === 'light' ? t.settings.themeLight : theme === 'dark' ? t.settings.themeDark : t.settings.themeSystem}
             </button>
           ))}
         </div>
@@ -198,13 +208,13 @@ function UISettings({
           onChange={(e) => onChange({ closeAfterCopy: e.target.checked })}
           className="w-3.5 h-3.5 rounded border-white/10 bg-white/5 text-indigo-500 focus:ring-0"
         />
-        <span className="text-[11px] text-slate-400">复制后自动关闭</span>
+        <span className="text-[11px] text-slate-400">{t.settings.closeAfterCopy}</span>
       </label>
 
       {/* Font Size */}
       <div className="space-y-1.5">
         <label className="block text-[11px] font-medium text-slate-400">
-          字体大小: {config.fontSize}px
+          {t.settings.fontSize}: {config.fontSize}px
         </label>
         <input
           type="range"
@@ -218,7 +228,7 @@ function UISettings({
 
       {/* Language */}
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-medium text-slate-400">语言 / Language</label>
+        <label className="block text-[11px] font-medium text-slate-400">{t.settings.language}</label>
         <div className="flex gap-1.5">
           {([{ value: 'zh-CN', label: '中文' }, { value: 'en', label: 'English' }] as const).map((lang) => (
             <button
@@ -248,6 +258,7 @@ function APISettings({
   config: AppConfig['api']; 
   onChange: (updates: Partial<AppConfig['api']>) => void;
 }) {
+  const { t } = useI18n();
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 

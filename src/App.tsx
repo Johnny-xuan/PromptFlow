@@ -23,7 +23,7 @@ const defaultConfig: AppConfig = {
     theme: "dark",
     fontSize: 14,
     opacity: 100,
-    language: "zh-CN",
+    language: "en",
   },
   api: {
     provider: "deepseek",
