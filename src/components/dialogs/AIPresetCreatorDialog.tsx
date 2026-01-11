@@ -3,6 +3,7 @@ import { Wand2, Loader2, RefreshCw, Check } from "lucide-react";
 import { Modal, Input, TextArea, Button } from "../ui";
 import { llmClient, parseStructuredOutput, validatePresetCreatorOutput } from "../../lib/services";
 import type { AppConfig, PolishPreset } from "../../types";
+import { useI18n } from "../../lib/i18n/context";
 
 interface AIPresetCreatorDialogProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ export function AIPresetCreatorDialog({
   onSave,
   apiConfig 
 }: AIPresetCreatorDialogProps) {
+  const { t } = useI18n();
   const [step, setStep] = useState<"describe" | "preview">("describe");
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -320,11 +322,11 @@ export function AIPresetCreatorDialog({
 
           <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
             <Button variant="ghost" onClick={() => setStep("describe")}>
-              返回
+              {t.common.close}
             </Button>
             <div className="flex gap-2">
               <Button variant="ghost" onClick={handleClose} disabled={isSaving}>
-                取消
+                {t.common.cancel}
               </Button>
               <Button 
                 onClick={handleSave} 
@@ -332,7 +334,7 @@ export function AIPresetCreatorDialog({
                 isLoading={isSaving}
               >
                 <Check className="w-4 h-4" />
-                保存预设
+                {t.common.save}
               </Button>
             </div>
           </div>
