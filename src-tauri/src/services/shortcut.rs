@@ -5,8 +5,13 @@ use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut,
 use super::panel;
 
 pub fn setup_global_shortcut(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
-    // 使用 Option + Space 作为默认快捷键，避免与常见应用冲突
+    // macOS: Option + Space
+    // Windows/Linux: Ctrl + Space (Alt + Space conflicts with Windows system menu)
+    #[cfg(target_os = "macos")]
     let shortcut = Shortcut::new(Some(Modifiers::ALT), Code::Space);
+    
+    #[cfg(not(target_os = "macos"))]
+    let shortcut = Shortcut::new(Some(Modifiers::CONTROL), Code::Space);
     
     let app_handle = app.clone();
     
