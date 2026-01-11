@@ -258,7 +258,6 @@ function APISettings({
   config: AppConfig['api']; 
   onChange: (updates: Partial<AppConfig['api']>) => void;
 }) {
-  const { t } = useI18n();
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
