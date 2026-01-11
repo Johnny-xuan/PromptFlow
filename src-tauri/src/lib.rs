@@ -39,18 +39,6 @@ pub fn run() {
             
             #[cfg(target_os = "macos")]
             services::init_panel(&app_handle);
-
-            #[cfg(target_os = "windows")]
-            {
-                use tauri::Manager;
-                use window_vibrancy::{apply_blur, apply_acrylic, apply_mica};
-                
-                if let Some(window) = app.get_webview_window("main") {
-                    // 尝试应用 Mica (Win11)
-                    #[cfg(target_os = "windows")]
-                    let _ = apply_blur(&window, Some((18, 18, 18, 125)));
-                }
-            }
             
             if let Err(e) = services::setup_global_shortcut(&app_handle) {
                 eprintln!("Failed to setup global shortcut: {}", e);
