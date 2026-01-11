@@ -285,6 +285,9 @@ fn ensure_directories(app_handle: &AppHandle) -> Result<PathBuf, AppError> {
         fs::create_dir_all(&templates_dir)?;
     }
     
+    // Install starter templates if they don't exist
+    let _ = install_starter_templates(&templates_dir);
+    
     Ok(data_dir)
 }
 

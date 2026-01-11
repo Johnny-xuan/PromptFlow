@@ -552,9 +552,26 @@ function PolishSettings({
   onChange: (updates: Partial<AppConfig['polish']>) => void;
   onOpenAICreator?: () => void;
 }) {
+  const { t } = useI18n();
   const [editingPreset, setEditingPreset] = useState<PolishPreset | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+
+  // Generate preset templates with i18n
+  const presetTemplates = [
+    { key: 'fromScratch', icon: '📝', systemPrompt: '', temperature: 0.7 },
+    { key: 'academic', icon: '🎓', systemPrompt: t.presetTemplates.academic.description, temperature: 0.5 },
+    { key: 'creative', icon: '✨', systemPrompt: t.presetTemplates.creative.description, temperature: 0.9 },
+    { key: 'codeAssistant', icon: '💻', systemPrompt: t.presetTemplates.codeAssistant.description, temperature: 0.6 },
+    { key: 'business', icon: '💼', systemPrompt: t.presetTemplates.business.description, temperature: 0.7 },
+    { key: 'concise', icon: '🎯', systemPrompt: t.presetTemplates.concise.description, temperature: 0.5 },
+  ].map(item => ({
+    name: t.presetTemplates[item.key as keyof typeof t.presetTemplates].name,
+    description: t.presetTemplates[item.key as keyof typeof t.presetTemplates].description,
+    icon: item.icon,
+    systemPrompt: item.key === 'fromScratch' ? '' : PRESET_TEMPLATES.find(p => p.icon === item.icon)?.systemPrompt || '',
+    temperature: item.temperature,
+  }));
 
   const allPresets = [...BUILT_IN_PRESETS, ...config.polish.presets.filter(p => !p.isBuiltIn)];
   const customPresets = config.polish.presets.filter(p => !p.isBuiltIn);
@@ -564,12 +581,12 @@ function PolishSettings({
     setShowTemplates(true);
   };
 
-  const handleSelectTemplate = (template: typeof PRESET_TEMPLATES[0]) => {
+  const handleSelectTemplate = (template: { name: string; description: string; icon: string; systemPrompt: string; temperature: number }) => {
     setShowTemplates(false);
     setIsCreating(true);
     setEditingPreset({
       id: `custom-${Date.now()}`,
-      name: template.name === '从空白开始' ? '' : template.name,
+      name: template.name === t.presetTemplates.fromScratch.name ? '' : template.name,
       description: template.description,
       icon: template.icon,
       systemPrompt: template.systemPrompt,
@@ -604,17 +621,17 @@ function PolishSettings({
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-200">选择模板</h3>
+          <h3 className="text-sm font-semibold text-slate-200">{t.messages.selectTemplate}</h3>
           <button 
             onClick={() => setShowTemplates(false)}
             className="text-xs text-slate-500 hover:text-slate-300"
           >
-            取消
+            {t.common.cancel}
           </button>
         </div>
         
         <p className="text-[11px] text-slate-500">
-          选择一个模板快速开始，或从空白创建
+          {t.messages.selectTemplateDesc}
         </p>
 
         <div className="grid grid-cols-2 gap-2 max-h-[280px] overflow-y-auto">
@@ -630,16 +647,16 @@ function PolishSettings({
               <div className="flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-slate-400 group-hover:text-slate-200" />
                 <span className="text-xs font-medium text-slate-300 group-hover:text-slate-100">
-                  AI 生成
+                  {t.settings.aiCreate}
                 </span>
               </div>
               <p className="text-[10px] text-slate-500">
-                描述风格，AI 生成润色用的 System Prompt
+                {t.settings.aiCreateDesc}
               </p>
             </button>
           )}
 
-          {PRESET_TEMPLATES.map((template, idx) => (
+          {presetTemplates.map((template, idx) => (
             <button
               key={idx}
               onClick={() => handleSelectTemplate(template)}
@@ -667,19 +684,19 @@ function PolishSettings({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-slate-200">
-            {isCreating ? '新建预设' : '编辑预设'}
+            {isCreating ? t.settings.addPreset : t.settings.editPreset}
           </h3>
           <button 
             onClick={() => { setEditingPreset(null); setIsCreating(false); }}
             className="text-xs text-slate-500 hover:text-slate-300"
           >
-            取消
+            {t.common.cancel}
           </button>
         </div>
 
         <div className="flex gap-2">
           <div className="w-14">
-            <label className="block text-[11px] font-medium text-slate-400 mb-1">图标</label>
+            <label className="block text-[11px] font-medium text-slate-400 mb-1">{t.aiPresetCreator.icon}</label>
             <input
               value={editingPreset.icon || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingPreset({ ...editingPreset, icon: e.target.value })}
@@ -688,32 +705,32 @@ function PolishSettings({
             />
           </div>
           <div className="flex-1 space-y-1.5">
-            <label className="block text-[11px] font-medium text-slate-400">名称</label>
+            <label className="block text-[11px] font-medium text-slate-400">{t.settings.presetName}</label>
             <input
               value={editingPreset.name}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingPreset({ ...editingPreset, name: e.target.value })}
-              placeholder="我的预设"
+              placeholder={t.aiPresetCreator.presetNamePlaceholder}
               className="w-full px-2.5 py-2 text-xs bg-white/[0.03] border border-white/[0.06] rounded-lg text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-white/10"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-[11px] font-medium text-slate-400">描述（可选）</label>
+          <label className="block text-[11px] font-medium text-slate-400">{t.settings.presetDescription}</label>
           <input
             value={editingPreset.description || ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingPreset({ ...editingPreset, description: e.target.value })}
-            placeholder="简短描述"
+            placeholder={t.aiPresetCreator.presetDescPlaceholder}
             className="w-full px-2.5 py-2 text-xs bg-white/[0.03] border border-white/[0.06] rounded-lg text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-white/10"
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-[11px] font-medium text-slate-400">System Prompt</label>
+          <label className="block text-[11px] font-medium text-slate-400">{t.settings.systemPrompt}</label>
           <textarea
             value={editingPreset.systemPrompt}
             onChange={(e) => setEditingPreset({ ...editingPreset, systemPrompt: e.target.value })}
-            placeholder="你是一个..."
+            placeholder="You are a..."
             rows={5}
             className="w-full px-2.5 py-2 text-xs bg-white/[0.03] border border-white/[0.06] rounded-lg text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-white/10 resize-none"
           />
@@ -739,7 +756,7 @@ function PolishSettings({
           className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-indigo-500/80 text-white rounded-lg hover:bg-indigo-500 transition-colors"
         >
           <Check className="w-3.5 h-3.5" />
-          保存
+          {t.common.save}
         </button>
       </div>
     );
@@ -749,13 +766,13 @@ function PolishSettings({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-medium text-slate-400">润色预设</span>
+        <span className="text-[11px] font-medium text-slate-400">{t.messages.polishPresets}</span>
         <button 
           onClick={handleCreatePreset}
           className="flex items-center gap-1 px-2 py-1 text-[10px] text-slate-500 hover:text-slate-300 rounded hover:bg-white/5 transition-colors"
         >
           <Plus className="w-3 h-3" />
-          新建
+          {t.common.add}
         </button>
       </div>
 
@@ -763,7 +780,7 @@ function PolishSettings({
       <div className="space-y-1 max-h-[200px] overflow-y-auto">
         {/* 内置预设 */}
         <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider px-2 py-1">
-          内置预设
+          {t.settings.builtIn}
         </div>
         {BUILT_IN_PRESETS.map((preset) => (
           <button
@@ -790,7 +807,7 @@ function PolishSettings({
         {customPresets.length > 0 && (
           <>
             <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider px-2 py-1 mt-2">
-              自定义预设
+              {t.settings.custom}
             </div>
             {customPresets.map((preset) => (
               <div

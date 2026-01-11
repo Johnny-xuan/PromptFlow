@@ -4,6 +4,7 @@ import { FolderOpen, Key, ChevronRight, ChevronLeft, Check, ArrowRight } from "l
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { promptService } from "../../lib/services";
 import type { AppConfig } from "../../types";
+import { useI18n } from "../../lib/i18n/context";
 
 interface OnboardingDialogProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ type Step = "welcome" | "storage" | "api" | "hotkey" | "done";
 const STEPS: Step[] = ["welcome", "storage", "api", "hotkey", "done"];
 
 export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSignal }: OnboardingDialogProps) {
+  const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState<Step>("welcome");
   const [storagePath, setStoragePath] = useState(currentConfig.storage.path);
   const [apiKey, setApiKey] = useState(currentConfig.api.apiKey);
@@ -73,12 +75,12 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
           setStoragePath(selected);
           setError(null);
         } else {
-          setError(result.error || "设置失败");
+          setError(result.error || t.messages.setupFailed);
         }
         setIsSettingUp(false);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "选择失败");
+      setError(err instanceof Error ? err.message : t.messages.selectFailed);
       setIsSettingUp(false);
     }
   };
@@ -116,11 +118,11 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
             {/* Main content */}
             <div className="flex-1 flex flex-col justify-center px-10 py-8">
               <h1 className="text-[28px] font-semibold text-white tracking-tight mb-3">
-                欢迎使用 PromptFlow
+                {t.onboarding.welcomeTitle}
               </h1>
               
               <p className="text-[15px] text-[#8B8B9E] leading-relaxed max-w-[320px]">
-                轻量级 Prompt 管理工具，帮助你收藏、整理和增强你的 AI 提示词。
+                {t.onboarding.welcomeDesc}
               </p>
               
               <div className="mt-8 space-y-3">
@@ -128,19 +130,19 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                   <div className="w-5 h-5 rounded bg-[#1A1A24] flex items-center justify-center">
                     <Check className="w-3 h-3 text-[#4ADE80]" />
                   </div>
-                  <span>本地 Markdown 存储，数据完全属于你</span>
+                  <span>{t.onboarding.featureLocal}</span>
                 </div>
                 <div className="flex items-center gap-3 text-[13px] text-[#6B6B7A]">
                   <div className="w-5 h-5 rounded bg-[#1A1A24] flex items-center justify-center">
                     <Check className="w-3 h-3 text-[#4ADE80]" />
                   </div>
-                  <span>全局快捷键，随时唤起</span>
+                  <span>{t.onboarding.featureHotkey}</span>
                 </div>
                 <div className="flex items-center gap-3 text-[13px] text-[#6B6B7A]">
                   <div className="w-5 h-5 rounded bg-[#1A1A24] flex items-center justify-center">
                     <Check className="w-3 h-3 text-[#4ADE80]" />
                   </div>
-                  <span>AI 润色，让提示词更专业</span>
+                  <span>{t.onboarding.featureAI}</span>
                 </div>
               </div>
             </div>
@@ -151,7 +153,7 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                 onClick={goNext}
                 className="w-full h-11 bg-white text-[#0A0A0F] rounded-lg font-medium text-[14px] hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
               >
-                开始配置
+                {t.onboarding.startConfig}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -169,9 +171,9 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                   1 / 3
                 </span>
               </div>
-              <h2 className="text-[20px] font-semibold text-white">存储位置</h2>
+              <h2 className="text-[20px] font-semibold text-white">{t.onboarding.storageTitle}</h2>
               <p className="text-[13px] text-[#6B6B7A] mt-1">
-                选择一个文件夹来存储你的 Prompt 数据
+                {t.onboarding.storageDesc}
               </p>
             </div>
             
@@ -201,11 +203,11 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[13px] font-medium text-white mb-1">
-                      {storagePath ? "已选择" : "点击选择文件夹"}
+                      {storagePath ? t.onboarding.storageSelected : t.onboarding.storageChoose}
                     </div>
                     <div className="text-[12px] text-[#6B6B7A] font-mono truncate">
                       {isSettingUp 
-                        ? "正在设置..." 
+                        ? t.onboarding.storageSetting 
                         : (storagePath || "~/Documents/PromptFlow")
                       }
                     </div>
@@ -221,7 +223,7 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
               )}
               
               <p className="mt-4 text-[12px] text-[#4B4B5A] leading-relaxed">
-                数据以 Markdown 格式存储，方便备份和迁移。你可以随时在设置中更改此路径。
+                {t.onboarding.storageHint}
               </p>
             </div>
             
@@ -232,13 +234,13 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                 className="h-9 px-4 text-[13px] text-[#8B8B9E] hover:text-white transition-colors flex items-center gap-1"
               >
                 <ChevronLeft className="w-4 h-4" />
-                返回
+                {t.onboarding.back}
               </button>
               <button
                 onClick={goNext}
                 className="h-9 px-5 bg-white text-[#0A0A0F] rounded-lg font-medium text-[13px] hover:bg-white/90 transition-colors flex items-center gap-1.5"
               >
-                下一步
+                {t.onboarding.next}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -256,9 +258,9 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                   2 / 3
                 </span>
               </div>
-              <h2 className="text-[20px] font-semibold text-white">AI 配置</h2>
+              <h2 className="text-[20px] font-semibold text-white">{t.onboarding.apiTitle}</h2>
               <p className="text-[13px] text-[#6B6B7A] mt-1">
-                配置 API Key 以启用智能润色功能
+                {t.onboarding.apiDesc}
               </p>
             </div>
             
@@ -284,7 +286,7 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                     >
                       {p === 'deepseek' ? 'DeepSeek' : 
                        p === 'openai' ? 'OpenAI' : 
-                       p === 'anthropic' ? 'Claude' : '自定义'}
+                       p === 'anthropic' ? 'Claude' : t.onboarding.custom}
                     </button>
                   ))}
                 </div>
@@ -309,7 +311,7 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
               
               <div className="p-3 rounded-lg bg-[#0F0F14] border border-white/[0.04]">
                 <p className="text-[12px] text-[#6B6B7A] leading-relaxed">
-                  没有 API Key？可以跳过此步骤，稍后在设置中配置。润色功能需要有效的 API Key 才能使用。
+                  {t.onboarding.apiSkipHint}
                 </p>
               </div>
             </div>
@@ -321,13 +323,13 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                 className="h-9 px-4 text-[13px] text-[#8B8B9E] hover:text-white transition-colors flex items-center gap-1"
               >
                 <ChevronLeft className="w-4 h-4" />
-                返回
+                {t.onboarding.back}
               </button>
               <button
                 onClick={goNext}
                 className="h-9 px-5 bg-white text-[#0A0A0F] rounded-lg font-medium text-[13px] hover:bg-white/90 transition-colors flex items-center gap-1.5"
               >
-                {apiKey ? "下一步" : "跳过"}
+                {apiKey ? t.onboarding.next : t.onboarding.skip}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -345,9 +347,9 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                   3 / 3
                 </span>
               </div>
-              <h2 className="text-[20px] font-semibold text-white">快捷键</h2>
+              <h2 className="text-[20px] font-semibold text-white">{t.onboarding.hotkeyTitle}</h2>
               <p className="text-[13px] text-[#6B6B7A] mt-1">
-                使用全局快捷键在任何应用中快速唤起
+                {t.onboarding.hotkeyDesc}
               </p>
             </div>
             
@@ -373,9 +375,9 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#8B8B9E] font-medium mb-1">需要辅助功能权限</p>
+                    <p className="text-[13px] text-[#8B8B9E] font-medium mb-1">{t.onboarding.hotkeyPermission}</p>
                     <p className="text-[12px] text-[#6B6B7A] leading-relaxed">
-                      macOS 需要在「系统设置 → 隐私与安全性 → 辅助功能」中授权才能监听全局快捷键。
+                      {t.onboarding.hotkeyPermissionDesc}
                     </p>
                   </div>
                 </div>
@@ -389,13 +391,13 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                 className="h-9 px-4 text-[13px] text-[#8B8B9E] hover:text-white transition-colors flex items-center gap-1"
               >
                 <ChevronLeft className="w-4 h-4" />
-                返回
+                {t.onboarding.back}
               </button>
               <button
                 onClick={goNext}
                 className="h-9 px-5 bg-white text-[#0A0A0F] rounded-lg font-medium text-[13px] hover:bg-white/90 transition-colors flex items-center gap-1.5"
               >
-                完成
+                {t.onboarding.done}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -412,15 +414,11 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
               </div>
               
               <h1 className="text-[24px] font-semibold text-white tracking-tight mb-3">
-                准备就绪
+                {t.onboarding.doneTitle}
               </h1>
               
               <p className="text-[14px] text-[#6B6B7A] leading-relaxed max-w-[280px]">
-                PromptFlow 已配置完成。随时按下{" "}
-                <kbd className="px-1.5 py-0.5 bg-[#1A1A24] rounded text-[12px] text-white font-mono">
-                  ⌥ Space
-                </kbd>{" "}
-                唤起。
+                {t.onboarding.doneDesc}
               </p>
             </div>
             
@@ -430,7 +428,7 @@ export function OnboardingDialog({ isOpen, onComplete, currentConfig, resetSigna
                 onClick={handleComplete}
                 className="w-full h-11 bg-[#4ADE80] text-[#0A0A0F] rounded-lg font-medium text-[14px] hover:bg-[#4ADE80]/90 transition-colors flex items-center justify-center gap-2"
               >
-                开始使用
+                {t.onboarding.startUsing}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

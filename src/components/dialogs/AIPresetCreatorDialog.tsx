@@ -167,35 +167,34 @@ export function AIPresetCreatorDialog({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="AI 润色预设"
+      title={t.aiPresetCreator.title}
       size="lg"
     >
       {step === "describe" ? (
         <div className="space-y-4">
           <p className="text-xs text-slate-400">
-            描述你想要的润色风格，AI 会生成对应的 System Prompt。<br />
-            <span className="text-slate-500">（润色预设用于控制「润色」按钮的行为，不是模板）</span>
+            {t.aiPresetCreator.describeHint}
           </p>
 
           <TextArea
-            label="描述你想要的润色风格"
+            label={t.aiPresetCreator.describeStyle}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="例如：我想要一个专门用于技术文档的润色风格，要求语言精准、结构清晰、避免口语化"
+            placeholder={t.aiPresetCreator.exampleTech}
             rows={4}
             autoFocus
           />
 
-          {/* 快速示例 */}
+          {/* Quick examples */}
           <div className="space-y-2">
-            <label className="text-[11px] font-medium text-slate-500">快速示例</label>
+            <label className="text-[11px] font-medium text-slate-500">{t.aiPresetCreator.quickExamples}</label>
             <div className="flex flex-wrap gap-1.5">
               {[
-                "专业技术文档风格",
-                "温和友好的客服语气",
-                "简洁有力的商业汇报",
-                "富有感染力的演讲稿",
-                "严谨的学术论文风格",
+                t.aiPresetCreator.exampleTech,
+                t.aiPresetCreator.exampleFriendly,
+                t.aiPresetCreator.exampleBusiness,
+                t.aiPresetCreator.exampleSpeech,
+                t.aiPresetCreator.exampleAcademic,
               ].map((example) => (
                 <button
                   key={example}
@@ -216,7 +215,7 @@ export function AIPresetCreatorDialog({
 
           <div className="flex items-center justify-end gap-2 pt-4 border-t border-white/[0.06]">
             <Button variant="ghost" onClick={handleClose}>
-              取消
+              {t.common.cancel}
             </Button>
             <button 
               onClick={handleGenerate} 
@@ -226,12 +225,12 @@ export function AIPresetCreatorDialog({
               {isGenerating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  生成中...
+                  {t.aiPresetCreator.generating}
                 </>
               ) : (
                 <>
                   <Wand2 className="w-4 h-4" />
-                  生成预设
+                  {t.aiPresetCreator.generate}
                 </>
               )}
             </button>
@@ -239,7 +238,7 @@ export function AIPresetCreatorDialog({
 
           {!apiConfig.apiKey && (
             <p className="text-[10px] text-amber-400/80 text-center">
-              请先在 API 设置中配置 API Key
+              {t.messages.apiKeyRequired}
             </p>
           )}
         </div>
@@ -248,7 +247,7 @@ export function AIPresetCreatorDialog({
           {/* 名称、描述和图标 */}
           <div className="flex gap-2">
             <div className="w-14">
-              <label className="block text-[11px] font-medium text-slate-400 mb-1">图标</label>
+              <label className="block text-[11px] font-medium text-slate-400 mb-1">{t.aiPresetCreator.icon}</label>
               <input
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
@@ -258,19 +257,19 @@ export function AIPresetCreatorDialog({
             </div>
             <div className="flex-1">
               <Input
-                label="预设名称"
+                label={t.aiPresetCreator.presetName}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="给预设起个名字"
+                placeholder={t.aiPresetCreator.presetNamePlaceholder}
               />
             </div>
           </div>
 
           <Input
-            label="预设描述"
+            label={t.aiPresetCreator.presetDesc}
             value={presetDescription}
             onChange={(e) => setPresetDescription(e.target.value)}
-            placeholder="一句话说明这个预设的用途"
+            placeholder={t.aiPresetCreator.presetDescPlaceholder}
           />
 
           {/* 生成的 System Prompt（可编辑） */}
@@ -287,7 +286,7 @@ export function AIPresetCreatorDialog({
                 ) : (
                   <RefreshCw className="w-3 h-3" />
                 )}
-                重新生成
+                {t.aiPresetCreator.regenerate}
               </button>
             </div>
             <TextArea
