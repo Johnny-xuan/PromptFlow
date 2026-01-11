@@ -247,11 +247,11 @@ export function InputSection({
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowPresets(!showPresets)}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-2 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors max-w-[140px]"
             >
-              <span>{activePreset?.icon}</span>
-              <span>{activePreset?.name}</span>
-              <ChevronDown className={cn("w-3 h-3 transition-transform", showPresets && "rotate-180")} />
+              <span className="shrink-0">{activePreset?.icon}</span>
+              <span className="truncate">{activePreset?.name}</span>
+              <ChevronDown className={cn("w-3 h-3 transition-transform shrink-0", showPresets && "rotate-180")} />
             </button>
 
             {/* Dropdown */}

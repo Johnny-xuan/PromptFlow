@@ -14,9 +14,18 @@ import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { Modal, Button } from "./components/ui";
 
+// Platform-specific default hotkey
+const getDefaultHotkey = () => {
+  const platform = navigator.platform.toLowerCase();
+  if (platform.includes('mac')) {
+    return "Option+Space";
+  }
+  return "Ctrl+Space"; // Windows/Linux
+};
+
 const defaultConfig: AppConfig = {
   ui: {
-    hotkey: "Alt+Space",
+    hotkey: getDefaultHotkey(),
     closeAfterCopy: true,
     rememberPosition: true,
     windowPosition: "center",

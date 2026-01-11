@@ -40,10 +40,33 @@ interface RawAppConfig {
   onboardingCompleted?: boolean;
 }
 
+// Get platform-specific hotkey
+function getPlatformHotkey(): string {
+  const platform = navigator.platform.toLowerCase();
+  if (platform.includes('mac')) {
+    return "Option+Space";
+  }
+  return "Ctrl+Space"; // Windows/Linux
+}
+
+// Migrate old hotkey values to new platform-specific ones
+function migrateHotkey(oldHotkey: string): string {
+  const legacyHotkeys = [
+    "Alt+Space",
+    "CommandOrControl+Shift+P",
+    "Command+Shift+P",
+    "Ctrl+Shift+P",
+  ];
+  if (legacyHotkeys.includes(oldHotkey)) {
+    return getPlatformHotkey();
+  }
+  return oldHotkey;
+}
+
 function normalizeConfig(raw: RawAppConfig): AppConfig {
   return {
     ui: {
-      hotkey: raw.ui.hotkey,
+      hotkey: migrateHotkey(raw.ui.hotkey),
       closeAfterCopy: raw.ui.closeAfterCopy,
       rememberPosition: raw.ui.rememberPosition,
       windowPosition: raw.ui.windowPosition as "center" | "cursor" | "fixed",
