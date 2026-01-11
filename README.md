@@ -5,7 +5,7 @@
 # PromptFlow
 
 <p align="center">
-  轻量级 Prompt 管理工具：本地 Markdown 存储，收藏/模板管理，AI 润色增强，全局快捷键快速唤起。
+  A lightweight prompt management tool with local Markdown storage, favorites/templates organization, AI-powered polishing, and global hotkey for instant access.
 </p>
 
 ## Features
@@ -13,7 +13,7 @@
 - **Local Markdown Storage** — Data stays on your machine, easy to backup and migrate
 - **Favorites & Templates** — Organize prompts with tags and descriptions
 - **AI Polishing** — Built-in presets to refine your prompts professionally
-- **Global Hotkey** — Press `⌥ Space` to summon from anywhere
+- **Global Hotkey** — Press `⌥ Space` (macOS) or `Ctrl+Space` (Windows/Linux) to summon from anywhere
 - **Starter Templates** — 6 official templates included (Gemini, Claude Code, OpenAI GPT‑5.2)
 - **Privacy First** — API Key stored locally only, never uploaded
 
