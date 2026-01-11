@@ -13,6 +13,7 @@ import { getTranslations } from "./lib/i18n";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { Modal, Button } from "./components/ui";
+import { cn } from "./lib/utils";
 
 // Platform-specific default hotkey
 const getDefaultHotkey = () => {
@@ -58,6 +59,22 @@ function App() {
   const [output, setOutput] = useState("");
   const [isPolishing, setIsPolishing] = useState(false);
   const [checkerEnabled, setCheckerEnabled] = useState(false);
+  const [isWindowFocused, setIsWindowFocused] = useState(true);
+
+  // Monitor window focus state for dynamic opacity (Windows/Linux)
+  useEffect(() => {
+    const unlistenFocus = listen('tauri://focus', () => {
+      setIsWindowFocused(true);
+    });
+    const unlistenBlur = listen('tauri://blur', () => {
+      setIsWindowFocused(false);
+    });
+
+    return () => {
+      unlistenFocus.then(f => f());
+      unlistenBlur.then(f => f());
+    };
+  }, []);
   
   // Checker 状态 - 一次性显示所有问题
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -500,7 +517,18 @@ function App() {
 
   return (
     <I18nProvider language={config.ui.language}>
-    <div className="w-full h-full floating-window flex flex-col">
+    <div 
+      ref={containerRef}
+      className={cn(
+        "w-full h-full floating-window flex flex-col transition-all duration-300",
+        !isWindowFocused && "opacity-80 grayscale-[0.2]"
+      )}
+      style={{
+        backgroundColor: isWindowFocused 
+          ? undefined 
+          : `rgba(15, 15, 20, ${config.ui.opacity / 100 * 0.6})`
+      }}
+    >
       <TitleBar 
         onSettingsClick={() => setShowSettings(true)} 
         checkerEnabled={checkerEnabled}
