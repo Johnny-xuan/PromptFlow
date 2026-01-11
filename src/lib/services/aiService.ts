@@ -18,19 +18,20 @@ interface PolishResponse {
 export { DEFAULT_BASE_URLS } from "./apiUtils";
 
 // Language instruction to append to system prompt
+// Base presets are in English, inject Chinese instruction when user selects Chinese
 const getLanguageInstruction = (language: UIConfig["language"] | undefined): string => {
-  if (language === 'en') {
-    return '\n\n【Language Requirement】Please respond in English. All output should be in English.';
+  if (language === 'zh-CN') {
+    return '\n\n【语言要求】请使用中文回复。所有输出内容都应该是中文。';
   }
-  return ''; // Default: no instruction (Chinese prompts work as-is)
+  return ''; // Default: English (presets are already in English)
 };
 
 // Task reminder for follow-up conversations
 const getTaskReminder = (language: UIConfig["language"] | undefined): string => {
-  if (language === 'en') {
-    return '\n\n[This is a modification request based on the previous result. Please adjust the previous Prompt accordingly and output the complete modified Prompt.]';
+  if (language === 'zh-CN') {
+    return '\n\n【这是对上一个润色结果的修改要求，请基于之前的 Prompt 进行调整，输出修改后的完整 Prompt】';
   }
-  return '\n\n【这是对上一个润色结果的修改要求，请基于之前的 Prompt 进行调整，输出修改后的完整 Prompt】';
+  return '\n\n[This is a modification request based on the previous result. Please adjust the previous Prompt accordingly and output the complete modified Prompt.]';
 };
 
 export const aiService = {
@@ -38,7 +39,7 @@ export const aiService = {
     const { input, preset, config, language } = request;
 
     if (!config.apiKey) {
-      return { output: "", error: language === 'en' ? "Please configure API Key in settings first" : "请先在设置中配置 API Key" };
+      return { output: "", error: language === 'zh-CN' ? "请先在设置中配置 API Key" : "Please configure API Key in settings first" };
     }
 
     try {
