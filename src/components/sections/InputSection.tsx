@@ -176,7 +176,7 @@ export function InputSection({
   onClarificationConfirm,
   onClarificationSkip,
 }: InputSectionProps) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [showPresets, setShowPresets] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -227,17 +227,19 @@ export function InputSection({
         <div className="flex items-center gap-1">
           <button 
             onClick={onFavorites}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-2 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
+            title={t.app.favorites}
           >
-            <Star className="w-3.5 h-3.5" />
-            <span>{t.app.favorites}</span>
+            <Star className="w-3.5 h-3.5 shrink-0" />
+            {lang === 'zh-CN' && <span className="max-w-[60px] truncate">{t.app.favorites}</span>}
           </button>
           <button 
             onClick={onTemplates}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-2 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors"
+            title={t.app.templates}
           >
-            <LayoutTemplate className="w-3.5 h-3.5" />
-            <span>{t.app.templates}</span>
+            <LayoutTemplate className="w-3.5 h-3.5 shrink-0" />
+            {lang === 'zh-CN' && <span className="max-w-[60px] truncate">{t.app.templates}</span>}
           </button>
         </div>
 
@@ -247,7 +249,7 @@ export function InputSection({
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowPresets(!showPresets)}
-              className="flex items-center gap-1.5 px-2 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors max-w-[140px]"
+              className="flex items-center gap-1.5 px-2 py-2 text-xs font-medium text-slate-500 hover:text-slate-300 hover:bg-white/5 rounded-lg transition-colors max-w-[100px]"
             >
               <span className="shrink-0">{activePreset?.icon}</span>
               <span className="truncate">{activePreset?.name}</span>
@@ -284,7 +286,7 @@ export function InputSection({
             onClick={onPolish}
             disabled={isPolishing || !value.trim()}
             className={cn(
-              "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all min-w-[100px]",
+              "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all min-w-[80px]",
               "bg-white/5 border border-white/5",
               value.trim() 
                 ? "text-slate-300 hover:text-slate-100 hover:bg-white/[0.08] cursor-pointer polish-glow" 
