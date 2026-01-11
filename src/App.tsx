@@ -230,6 +230,7 @@ function App() {
       preset: activePreset,
       config: config.api,
       chatHistory,
+      language: config.ui.language,
     });
 
     if (result.error) {
